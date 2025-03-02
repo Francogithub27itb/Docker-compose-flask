@@ -4,13 +4,13 @@
 🚀 1️⃣ Construcción de la imagen
 
 
-docker build -t fcl2005/flask_image .
+docker build -t fcl2005/flask_imagen .
 
 
 ▶️ 2️⃣ Ejecución del contenedor
 
 
-docker run -d --name flask_container -p 8000:8000 -p 9001:9001 -p 22222:22 fcl2005/flask_image
+docker run -d --name flask_container -p 8000:8000 -p 9001:9001 -p 22222:22 fcl2005/flask_imagen
 
 
 🖥 3️⃣ Conexión a los servicios
@@ -26,4 +26,4 @@ ssh -p 22222 root@localhost
 📌 4️⃣ URL de Docker Hub
 Añadir el enlace a la imagen en Docker Hub:
 
-https://hub.docker.com/r/fcl2005/flask_image
+https://hub.docker.com/r/fcl2005/flask_imagen
