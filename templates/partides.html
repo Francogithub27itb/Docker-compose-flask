@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Partides</title>
+</head>
+<body>
+    <h1>Partides - Jornada {{ jornada }}</h1>
+
+    {% if mode is none %}
+        <form method="POST">
+            <h2>Selecciona el Mode de Joc</h2>
+            <button type="submit" name="mode" value="lliga">Lliga</button>
+            <button type="submit" name="mode" value="eliminatories">Eliminatòries</button>
+        </form>
+    {% else %}
+        {% if partides %}
+            <form method="POST">
+                {% for partida in partides %}
+                    <p>
+                        {{ partida[0] }} vs {{ partida[1] }}
+                        <button type="submit" name="guanyador" value="{{ partida[0] }}">{{ partida[0] }}</button>
+                        <button type="submit" name="guanyador" value="{{ partida[1] }}">{{ partida[1] }}</button>
+                        <input type="hidden" name="partida" value="{{ partida[0] }} vs {{ partida[1] }}">
+                    </p>
+                {% endfor %}
+            </form>
+        {% else %}
+            {% if campio %}
+                <h2>{{ campio }}</h2>
+            {% else %}
+                <p>Totes les partides de la jornada han finalitzat.</p>
+                <form method="POST">
+                    <button type="submit" name="avançar">Avançar Jornada</button>
+                </form>
+            {% endif %}
+            {% if missatge %}
+                <h3>{{ missatge }}</h3>
+            {% endif %}
+
+        {% endif %}
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('reiniciar') }}">
+        <button type="submit">Reiniciar Torneig</button>
+    </form>
+
+    <a href="/">Torna a l'inici</a>
+</body>
+</html>
