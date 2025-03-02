@@ -1,0 +1,39 @@
+# 1️⃣ Usamos Ubuntu 24.04 como base
+FROM ubuntu:24.04
+
+# 2️⃣ Instalamos paquetes básicos
+RUN apt update && apt install -y \
+    python3 python3-venv python3-pip \
+    gunicorn \
+    supervisor \
+    openssh-server \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3️⃣ Creamos un usuario para ejecutar la aplicación Flask
+RUN useradd -m -s /bin/bash flaskuser && \
+    echo "flaskuser:flaskuser" | chpasswd && \
+    usermod -aG sudo flaskuser
+
+# 4️⃣ Configuración del servidor SSH
+RUN mkdir /var/run/sshd
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+# 5️⃣ Configuración de la aplicación Flask
+WORKDIR /app
+
+# Copiamos toda la aplicación al contenedor
+COPY . .
+
+# Creamos el entorno virtual y activamos
+RUN python3 -m venv venv
+RUN . venv/bin/activate && pip install --no-cache-dir -r requirementsescacs.txt && pip install gunicorn
+
+# 6️⃣ Configuración de Supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# 7️⃣ Exponemos los puertos necesarios
+EXPOSE 8000 9001 22222
+
+# 8️⃣ Comando de inicio con Supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
